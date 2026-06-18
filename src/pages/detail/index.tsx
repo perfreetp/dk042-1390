@@ -141,7 +141,7 @@ const DetailPage: React.FC = () => {
           )}
         </View>
 
-        {part.status === 'pending' && !part.isIssued && (
+        {part.status === 'pending' && !part.isIssued && part.lastJudgment?.result !== 'reissue' && (
           <View className={styles.actionCard}>
             <Button
               className={styles.judgeBtn}

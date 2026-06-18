@@ -244,6 +244,7 @@ export const PartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                 statusReason: reasonMap.reason,
                 isIssued: false,
                 issuedInfo: undefined,
+                lastJudgment: undefined,
                 updateTime: now,
               }
             : p
@@ -305,12 +306,11 @@ export const PartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         if (lifeCheck.status === 'unavailable') {
           newStatus = 'unavailable';
           newStatusReason = `工程判定后${lifeCheck.reason}，仍不可发料`;
-        } else if (lifeCheck.status === 'pending') {
-          newStatus = 'pending';
-          newStatusReason = `工程判定通过，但${lifeCheck.reason}，待确认`;
         } else {
           newStatus = 'available';
-          newStatusReason = '工程判定通过，可正常发料';
+          newStatusReason = lifeCheck.reason
+            ? `工程判定通过（${lifeCheck.reason}，请关注寿命风险）`
+            : '工程判定通过，可正常发料';
         }
       } else if (result === 'quarantine') {
         newStatus = 'pending';
@@ -345,10 +345,14 @@ export const PartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         )
       );
 
+      const targetExceptionId = exceptionId || exceptions.find(
+        e => e.partId === partId && e.status === 'pending'
+      )?.id;
+
       const record: JudgmentRecord = {
         id: 'J' + String(Date.now()).slice(-6),
         partId,
-        exceptionId,
+        exceptionId: targetExceptionId,
         result,
         operator,
         judgmentTime: now,
@@ -358,10 +362,10 @@ export const PartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       };
       setJudgments(prev => [record, ...prev]);
 
-      if (exceptionId) {
+      if (targetExceptionId) {
         setExceptions(prev =>
           prev.map(e =>
-            e.id === exceptionId
+            e.id === targetExceptionId
               ? {
                   ...e,
                   status: 'resolved',
@@ -378,7 +382,7 @@ export const PartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
       console.log('[PartContext] 工程判定:', partId, result, newStatus);
     },
-    [parts, evaluateStatus]
+    [parts, evaluateStatus, exceptions]
   );
 
   const addTransaction = useCallback((record: Omit<TransactionRecord, 'id' | 'operateTime'>) => {
