@@ -1,0 +1,151 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  padding: $page-padding;
+  padding-bottom: 160rpx;
+  background: $color-bg-page;
+}
+
+.formCard {
+  background: $color-bg-card;
+  border-radius: $radius-md;
+  padding: $spacing-lg;
+  box-shadow: $shadow-card;
+  margin-bottom: $spacing-md;
+}
+
+.sectionTitle {
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin: $spacing-md 0 $spacing-lg;
+}
+
+.searchBtn {
+  @include button-reset;
+  width: 100%;
+  height: 88rpx;
+  background: rgba(255, 125, 0, 0.08);
+  border: 2rpx dashed $color-warning;
+  border-radius: $radius-md;
+  color: $color-warning;
+  font-size: $font-size-md;
+  font-weight: $font-weight-medium;
+  transition: all $transition-base;
+
+  &:active {
+    opacity: 0.8;
+    transform: scale(0.99);
+  }
+}
+
+.reasonGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $spacing-md;
+}
+
+.reasonCard {
+  background: $color-bg-input;
+  border-radius: $radius-md;
+  padding: $spacing-lg $spacing-md;
+  border: 2rpx solid transparent;
+  transition: all $transition-base;
+
+  &.active {
+    background: rgba(255, 125, 0, 0.08);
+    border-color: $color-warning;
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.reasonIcon {
+  font-size: 48rpx;
+  margin-bottom: $spacing-xs;
+}
+
+.reasonText {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: $color-text-primary;
+}
+
+.reasonDesc {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  margin-top: 4rpx;
+}
+
+.reasonCard.active .reasonText {
+  color: $color-warning;
+}
+
+.textareaWrap {
+  width: 100%;
+  background: $color-bg-input;
+  border-radius: $radius-md;
+  padding: $spacing-md;
+  min-height: 160rpx;
+}
+
+.textarea {
+  width: 100%;
+  min-height: 128rpx;
+  font-size: $font-size-md;
+  color: $color-text-primary;
+  line-height: 1.6;
+}
+
+.footerBar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: $spacing-md $page-padding;
+  padding-bottom: calc(#{$spacing-md} + env(safe-area-inset-bottom));
+  background: $color-bg-card;
+  box-shadow: $shadow-float;
+  display: flex;
+  gap: $spacing-md;
+}
+
+.cancelBtn {
+  @include button-reset;
+  flex: 1;
+  height: $button-height-lg;
+  background: $color-bg-input;
+  color: $color-text-secondary;
+  font-size: $font-size-md;
+  border-radius: $radius-button;
+  transition: all $transition-base;
+
+  &:active {
+    opacity: 0.8;
+    transform: scale(0.98);
+  }
+}
+
+.submitBtn {
+  @include button-reset;
+  flex: 2;
+  height: $button-height-lg;
+  background: linear-gradient(135deg, #FF7D00 0%, #FF9A2E 100%);
+  color: $color-text-white;
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  border-radius: $radius-button;
+  transition: all $transition-base;
+
+  &:active {
+    opacity: 0.9;
+    transform: scale(0.98);
+  }
+
+  &.disabled {
+    background: $color-text-disabled;
+  }
+}

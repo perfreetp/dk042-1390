@@ -1,0 +1,69 @@
+@use '@/styles/variables.scss' as *;
+
+.item {
+  margin-bottom: $spacing-lg;
+}
+
+.labelRow {
+  display: flex;
+  align-items: center;
+  margin-bottom: $spacing-sm;
+}
+
+.required {
+  color: $color-error;
+  font-size: $font-size-md;
+  margin-right: 4rpx;
+}
+
+.label {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: $color-text-primary;
+}
+
+.control {
+  background: $color-bg-input;
+  border-radius: $radius-md;
+  padding: 0 $spacing-md;
+  min-height: 88rpx;
+  display: flex;
+  align-items: center;
+  border: 2rpx solid transparent;
+  transition: all $transition-base;
+
+  &.controlError {
+    border-color: $color-error;
+    background: rgba(245, 63, 63, 0.04);
+  }
+}
+
+.errorText {
+  font-size: $font-size-xs;
+  color: $color-error;
+  margin-top: $spacing-xs;
+}
+
+.inputWrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.input {
+  flex: 1;
+  height: 88rpx;
+  font-size: $font-size-md;
+  color: $color-text-primary;
+}
+
+.placeholder {
+  color: $color-text-disabled;
+  font-size: $font-size-md;
+}
+
+.suffix {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+  margin-left: $spacing-sm;
+}

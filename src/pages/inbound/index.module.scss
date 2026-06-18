@@ -1,0 +1,168 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  padding: $page-padding;
+  padding-bottom: 160rpx;
+  background: $color-bg-page;
+}
+
+.sectionTitle {
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin: $spacing-md 0 $spacing-lg;
+}
+
+.formCard {
+  background: $color-bg-card;
+  border-radius: $radius-md;
+  padding: $spacing-lg;
+  box-shadow: $shadow-card;
+  margin-bottom: $spacing-md;
+}
+
+.scanBtn {
+  @include button-reset;
+  width: 100%;
+  height: 88rpx;
+  background: rgba(30, 100, 200, 0.08);
+  border: 2rpx dashed $color-primary;
+  border-radius: $radius-md;
+  color: $color-primary;
+  font-size: $font-size-md;
+  font-weight: $font-weight-medium;
+  margin-bottom: $spacing-lg;
+  transition: all $transition-base;
+
+  &:active {
+    opacity: 0.8;
+    transform: scale(0.99);
+  }
+}
+
+.pickerWrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.pickerText {
+  flex: 1;
+  font-size: $font-size-md;
+  color: $color-text-primary;
+
+  &.placeholder {
+    color: $color-text-disabled;
+  }
+}
+
+.unitOptions {
+  display: flex;
+  gap: $spacing-sm;
+  flex-wrap: wrap;
+}
+
+.unitOption {
+  padding: $spacing-sm $spacing-lg;
+  background: $color-bg-input;
+  border-radius: $radius-button;
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  border: 2rpx solid transparent;
+  transition: all $transition-base;
+
+  &.active {
+    background: rgba(30, 100, 200, 0.1);
+    border-color: $color-primary;
+    color: $color-primary;
+    font-weight: $font-weight-medium;
+  }
+}
+
+.statusPreview {
+  margin-top: $spacing-lg;
+  padding: $spacing-lg;
+  border-radius: $radius-md;
+}
+
+.statusAvailable {
+  background: rgba(0, 180, 42, 0.08);
+  border: 2rpx solid rgba(0, 180, 42, 0.2);
+}
+
+.statusPending {
+  background: rgba(255, 125, 0, 0.08);
+  border: 2rpx solid rgba(255, 125, 0, 0.2);
+}
+
+.statusUnavailable {
+  background: rgba(245, 63, 63, 0.08);
+  border: 2rpx solid rgba(245, 63, 63, 0.2);
+}
+
+.statusLabel {
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  margin-bottom: $spacing-xs;
+}
+
+.statusAvailable .statusLabel { color: $color-status-available; }
+.statusPending .statusLabel { color: $color-status-pending; }
+.statusUnavailable .statusLabel { color: $color-status-unavailable; }
+
+.statusReason {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  line-height: 1.5;
+}
+
+.footerBar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: $spacing-md $page-padding;
+  padding-bottom: calc(#{$spacing-md} + env(safe-area-inset-bottom));
+  background: $color-bg-card;
+  box-shadow: $shadow-float;
+  display: flex;
+  gap: $spacing-md;
+}
+
+.cancelBtn {
+  @include button-reset;
+  flex: 1;
+  height: $button-height-lg;
+  background: $color-bg-input;
+  color: $color-text-secondary;
+  font-size: $font-size-md;
+  border-radius: $radius-button;
+  transition: all $transition-base;
+
+  &:active {
+    opacity: 0.8;
+    transform: scale(0.98);
+  }
+}
+
+.submitBtn {
+  @include button-reset;
+  flex: 2;
+  height: $button-height-lg;
+  background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+  color: $color-text-white;
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  border-radius: $radius-button;
+  transition: all $transition-base;
+
+  &:active {
+    opacity: 0.9;
+    transform: scale(0.98);
+  }
+
+  &.disabled {
+    background: $color-text-disabled;
+  }
+}

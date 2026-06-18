@@ -1,0 +1,195 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  padding: $page-padding;
+  padding-bottom: 160rpx;
+  background: $color-bg-page;
+}
+
+.formCard {
+  background: $color-bg-card;
+  border-radius: $radius-md;
+  padding: $spacing-lg;
+  box-shadow: $shadow-card;
+  margin-bottom: $spacing-md;
+}
+
+.sectionTitle {
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin: $spacing-md 0 $spacing-lg;
+}
+
+.pickerWrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.pickerText {
+  flex: 1;
+  font-size: $font-size-md;
+  color: $color-text-primary;
+
+  &.placeholder {
+    color: $color-text-disabled;
+  }
+}
+
+.searchBtn {
+  @include button-reset;
+  width: 100%;
+  height: 88rpx;
+  background: rgba(30, 100, 200, 0.08);
+  border: 2rpx dashed $color-primary;
+  border-radius: $radius-md;
+  color: $color-primary;
+  font-size: $font-size-md;
+  font-weight: $font-weight-medium;
+  transition: all $transition-base;
+
+  &:active {
+    opacity: 0.8;
+    transform: scale(0.99);
+  }
+}
+
+.lifeCheckCard {
+  margin-top: $spacing-lg;
+  padding: $spacing-lg;
+  border-radius: $radius-md;
+}
+
+.checkPass {
+  background: rgba(0, 180, 42, 0.08);
+  border: 2rpx solid rgba(0, 180, 42, 0.2);
+}
+
+.checkWarn {
+  background: rgba(255, 125, 0, 0.08);
+  border: 2rpx solid rgba(255, 125, 0, 0.2);
+}
+
+.checkFail {
+  background: rgba(245, 63, 63, 0.08);
+  border: 2rpx solid rgba(245, 63, 63, 0.2);
+}
+
+.checkTitle {
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  margin-bottom: $spacing-sm;
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+}
+
+.checkPass .checkTitle { color: $color-status-available; }
+.checkWarn .checkTitle { color: $color-status-pending; }
+.checkFail .checkTitle { color: $color-status-unavailable; }
+
+.checkDesc {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  line-height: 1.6;
+}
+
+.checkRow {
+  display: flex;
+  justify-content: space-between;
+  padding: $spacing-xs 0;
+  font-size: $font-size-sm;
+}
+
+.checkLabel {
+  color: $color-text-tertiary;
+}
+
+.checkValue {
+  color: $color-text-primary;
+  font-weight: $font-weight-medium;
+}
+
+.checkboxRow {
+  display: flex;
+  align-items: center;
+  padding: $spacing-md 0;
+}
+
+.checkbox {
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: $radius-xs;
+  border: 2rpx solid $color-border;
+  margin-right: $spacing-md;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: $font-size-sm;
+  color: $color-text-white;
+  background: $color-bg-card;
+  transition: all $transition-base;
+
+  &.checked {
+    background: $color-primary;
+    border-color: $color-primary;
+  }
+}
+
+.checkboxLabel {
+  flex: 1;
+  font-size: $font-size-md;
+  color: $color-text-primary;
+}
+
+.footerBar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: $spacing-md $page-padding;
+  padding-bottom: calc(#{$spacing-md} + env(safe-area-inset-bottom));
+  background: $color-bg-card;
+  box-shadow: $shadow-float;
+  display: flex;
+  gap: $spacing-md;
+}
+
+.cancelBtn {
+  @include button-reset;
+  flex: 1;
+  height: $button-height-lg;
+  background: $color-bg-input;
+  color: $color-text-secondary;
+  font-size: $font-size-md;
+  border-radius: $radius-button;
+  transition: all $transition-base;
+
+  &:active {
+    opacity: 0.8;
+    transform: scale(0.98);
+  }
+}
+
+.submitBtn {
+  @include button-reset;
+  flex: 2;
+  height: $button-height-lg;
+  background: linear-gradient(135deg, $color-success 0%, #23C343 100%);
+  color: $color-text-white;
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  border-radius: $radius-button;
+  transition: all $transition-base;
+
+  &:active {
+    opacity: 0.9;
+    transform: scale(0.98);
+  }
+
+  &.disabled {
+    background: $color-text-disabled;
+  }
+}

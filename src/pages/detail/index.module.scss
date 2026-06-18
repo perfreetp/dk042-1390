@@ -1,0 +1,186 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  padding-bottom: 120rpx;
+  background: $color-bg-page;
+}
+
+.headerCard {
+  background: linear-gradient(135deg, $color-primary 0%, $color-primary-dark 100%);
+  padding: $spacing-xl $page-padding;
+  padding-bottom: 64rpx;
+}
+
+.headerPartNumber {
+  font-size: $font-size-xxl;
+  font-weight: $font-weight-bold;
+  color: $color-text-white;
+  margin-bottom: $spacing-xs;
+}
+
+.headerSerial {
+  font-size: $font-size-sm;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: $spacing-md;
+}
+
+.contentWrap {
+  padding: 0 $page-padding;
+  margin-top: -32rpx;
+}
+
+.infoCard {
+  background: $color-bg-card;
+  border-radius: $radius-md;
+  padding: $spacing-lg;
+  box-shadow: $shadow-card;
+  margin-bottom: $spacing-md;
+}
+
+.lifeSummary {
+  display: flex;
+  align-items: stretch;
+}
+
+.summaryItem {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.summaryValue {
+  font-size: 48rpx;
+  font-weight: $font-weight-bold;
+  color: $color-primary;
+  line-height: 1.2;
+}
+
+.summaryUnit {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  margin-top: 4rpx;
+}
+
+.summaryLabel {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  margin-top: $spacing-xs;
+}
+
+.summaryDivider {
+  width: 1rpx;
+  background: $color-divider;
+  margin: 0 $spacing-md;
+}
+
+.cardTitle {
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin-bottom: $spacing-md;
+  display: flex;
+  align-items: center;
+}
+
+.cardTitleIcon {
+  width: 6rpx;
+  height: 28rpx;
+  background: $color-primary;
+  border-radius: $radius-round;
+  margin-right: $spacing-sm;
+}
+
+.infoRow {
+  display: flex;
+  align-items: flex-start;
+  padding: $spacing-sm 0;
+  border-bottom: 1rpx solid $color-divider;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.infoLabel {
+  width: 180rpx;
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+  flex-shrink: 0;
+}
+
+.infoValue {
+  flex: 1;
+  font-size: $font-size-sm;
+  color: $color-text-primary;
+  word-break: break-all;
+}
+
+.historyItem {
+  display: flex;
+  align-items: flex-start;
+  padding: $spacing-md 0;
+  border-bottom: 1rpx solid $color-divider;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.historyDot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: $radius-round;
+  margin-top: 8rpx;
+  margin-right: $spacing-md;
+  flex-shrink: 0;
+}
+
+.historyContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.historyType {
+  display: inline-flex;
+  padding: 2rpx 12rpx;
+  border-radius: $radius-round;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  margin-bottom: 4rpx;
+}
+
+.typeInbound {
+  background: rgba(30, 100, 200, 0.1);
+  color: $color-primary;
+}
+
+.typeOutbound {
+  background: rgba(0, 180, 42, 0.1);
+  color: $color-success;
+}
+
+.typeReturn {
+  background: rgba(255, 125, 0, 0.1);
+  color: $color-warning;
+}
+
+.historyDesc {
+  font-size: $font-size-sm;
+  color: $color-text-primary;
+  line-height: 1.5;
+}
+
+.historyTime {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  margin-top: 4rpx;
+}
+
+.emptyHistory {
+  text-align: center;
+  padding: $spacing-xl 0;
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+}
