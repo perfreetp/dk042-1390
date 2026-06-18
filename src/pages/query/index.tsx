@@ -6,13 +6,14 @@ import PartCard from '@/components/PartCard';
 import styles from './index.module.scss';
 import classnames from 'classnames';
 
-type FilterType = 'all' | PartStatus;
+type FilterType = 'all' | PartStatus | 'issued';
 
 const FILTER_OPTIONS: { key: FilterType; label: string }[] = [
   { key: 'all', label: '全部' },
   { key: 'available', label: '可用' },
   { key: 'pending', label: '待工程判定' },
   { key: 'unavailable', label: '不可发料' },
+  { key: 'issued', label: '已发出' },
 ];
 
 const QueryPage: React.FC = () => {
@@ -22,7 +23,9 @@ const QueryPage: React.FC = () => {
 
   const filteredParts = useMemo(() => {
     let result = parts;
-    if (filter !== 'all') {
+    if (filter === 'issued') {
+      result = result.filter(p => p.isIssued);
+    } else if (filter !== 'all') {
       result = result.filter(p => p.status === filter);
     }
     if (keyword.trim()) {

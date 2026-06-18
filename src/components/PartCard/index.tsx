@@ -3,6 +3,7 @@ import { View, Text } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { LifePart } from '@/types/part';
 import StatusBadge from '@/components/StatusBadge';
+import classnames from 'classnames';
 import styles from './index.module.scss';
 
 interface PartCardProps {
@@ -25,7 +26,14 @@ const PartCard: React.FC<PartCardProps> = ({ part, onClick }) => {
     <View className={styles.card} onClick={handleClick}>
       <View className={styles.header}>
         <Text className={styles.partNumber}>{part.partNumber}</Text>
-        <StatusBadge status={part.status} size="sm" />
+        <View className={styles.tagRow}>
+          {part.isIssued && (
+            <View className={styles.issuedTag}>
+              <Text className={styles.issuedTagText}>已发出</Text>
+            </View>
+          )}
+          <StatusBadge status={part.status} size="sm" />
+        </View>
       </View>
       <View className={styles.row}>
         <Text className={styles.label}>序号</Text>
@@ -57,7 +65,12 @@ const PartCard: React.FC<PartCardProps> = ({ part, onClick }) => {
         )}
       </View>
       {part.statusReason && (
-        <View className={styles.reason}>
+        <View
+          className={classnames(
+            styles.reason,
+            part.isIssued ? styles.reasonIssued : styles.reasonWarn
+          )}
+        >
           <Text className={styles.reasonText}>{part.statusReason}</Text>
         </View>
       )}

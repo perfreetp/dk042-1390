@@ -5,7 +5,6 @@ import { usePart } from '@/store/PartContext';
 import { LifePart } from '@/types/part';
 import FormItem, { FormInput } from '@/components/FormItem';
 import PartCard from '@/components/PartCard';
-import StatusBadge from '@/components/StatusBadge';
 import styles from './index.module.scss';
 import classnames from 'classnames';
 
@@ -22,7 +21,7 @@ interface LifeCheck {
 }
 
 const OutboundPage: React.FC = () => {
-  const { parts, addTransaction } = usePart();
+  const { parts, issuePart } = usePart();
   const [searchSerial, setSearchSerial] = useState('');
   const [selectedPart, setSelectedPart] = useState<LifePart | null>(null);
   const [workOrder, setWorkOrder] = useState('');
@@ -33,9 +32,17 @@ const OutboundPage: React.FC = () => {
   const [plannedUsage, setPlannedUsage] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  const plannedNum = useMemo(() => {
+    if (plannedUsage.trim() === '') return NaN;
+    const v = Number(plannedUsage);
+    return Number.isFinite(v) ? v : NaN;
+  }, [plannedUsage]);
+
+  const plannedValid = Number.isFinite(plannedNum) && plannedNum > 0;
+
   const lifeCheck: LifeCheck | null = useMemo(() => {
-    if (!selectedPart) return null;
-    const planned = Number(plannedUsage) || 100;
+    if (!selectedPart || !plannedValid) return null;
+    const planned = plannedNum;
     const threshold = selectedPart.lifeUnit === 'CY' ? 300 : 500;
     const remaining = selectedPart.remainingLife;
     const afterUse = remaining - planned;
@@ -55,7 +62,7 @@ const OutboundPage: React.FC = () => {
         pass: false,
         level: 'fail',
         title: '✗ 剩余寿命不足',
-        desc: `发料后寿命将出现负值，不满足本次使用需求`,
+        desc: `本次计划消耗 ${planned}${selectedPart.lifeUnit}，超过剩余寿命 ${remaining}${selectedPart.lifeUnit}，不满足使用需求`,
         requiredLife: planned,
         remainingLife: remaining,
         lifeUnit: selectedPart.lifeUnit,
@@ -66,7 +73,7 @@ const OutboundPage: React.FC = () => {
         pass: true,
         level: 'warn',
         title: '⚠ 寿命余量偏低',
-        desc: `发料后剩余寿命接近最低阈值，建议工程确认后发放`,
+        desc: `发料后剩余寿命仅 ${afterUse}${selectedPart.lifeUnit}，接近最低阈值 ${threshold}${selectedPart.lifeUnit}，建议工程确认后发放`,
         requiredLife: planned,
         remainingLife: remaining,
         lifeUnit: selectedPart.lifeUnit,
@@ -76,12 +83,12 @@ const OutboundPage: React.FC = () => {
       pass: true,
       level: 'pass',
       title: '✓ 寿命满足要求',
-      desc: '剩余寿命满足计划使用窗口，可正常发料',
+      desc: `剩余寿命 ${remaining}${selectedPart.lifeUnit}，满足计划使用窗口 ${planned}${selectedPart.lifeUnit}，可正常发料`,
       requiredLife: planned,
       remainingLife: remaining,
       lifeUnit: selectedPart.lifeUnit,
     };
-  }, [selectedPart, plannedUsage]);
+  }, [selectedPart, plannedNum, plannedValid]);
 
   const handleScan = async () => {
     try {
@@ -101,6 +108,11 @@ const OutboundPage: React.FC = () => {
       p => p.serialNumber === serial || p.serialNumber.toLowerCase().includes(serial.toLowerCase())
     );
     if (part) {
+      if (part.isIssued) {
+        Taro.showToast({ title: '该件已发出，不可重复发料', icon: 'none' });
+        setSelectedPart(null);
+        return;
+      }
       setSelectedPart(part);
     } else {
       Taro.showToast({ title: '未找到该寿命件', icon: 'none' });
@@ -113,6 +125,11 @@ const OutboundPage: React.FC = () => {
     if (!selectedPart) newErrors.part = '请先选择要出库的寿命件';
     if (!workOrder.trim() && !aircraftReg.trim()) {
       newErrors.order = '请填写维修工单或飞机注册号';
+    }
+    if (plannedUsage.trim() === '') {
+      newErrors.plannedUsage = '请填写计划使用量';
+    } else if (!Number.isFinite(plannedNum) || plannedNum <= 0) {
+      newErrors.plannedUsage = '计划使用量必须为大于0的数字';
     }
     if (!receiver.trim()) newErrors.receiver = '请填写领料人';
     if (!cabinet) newErrors.cabinet = '请选择发料柜位';
@@ -127,13 +144,14 @@ const OutboundPage: React.FC = () => {
       return;
     }
     if (lifeCheck?.level === 'fail') {
-      Taro.showToast({ title: '该件不满足发料条件', icon: 'none' });
+      Taro.showToast({ title: lifeCheck.title.replace(/^[✗⚠]\s*/, ''), icon: 'none' });
       return;
     }
     if (lifeCheck?.level === 'warn') {
       Taro.showModal({
         title: '寿命余量偏低',
-        content: '该件发料后剩余寿命接近阈值，是否确认发放？',
+        content: lifeCheck.desc,
+        confirmText: '确认发放',
         success: res => {
           if (res.confirm) doSubmit();
         },
@@ -145,9 +163,8 @@ const OutboundPage: React.FC = () => {
 
   const doSubmit = () => {
     if (!selectedPart) return;
-    addTransaction({
+    issuePart(selectedPart.id, plannedNum, {
       partId: selectedPart.id,
-      type: 'outbound',
       partNumber: selectedPart.partNumber,
       serialNumber: selectedPart.serialNumber,
       operator: '当前用户',
@@ -191,22 +208,28 @@ const OutboundPage: React.FC = () => {
             onChange={setWorkOrder}
           />
         </FormItem>
-        <FormItem label="飞机注册号">
+        <FormItem label="飞机注册号" error={errors.order}>
           <FormInput
             value={aircraftReg}
             placeholder="如 B-6123"
             onChange={setAircraftReg}
           />
         </FormItem>
-        <FormItem label="计划使用量">
+        <FormItem label="计划使用量" required error={errors.plannedUsage}>
           <FormInput
             value={plannedUsage}
-            placeholder="预计消耗寿命"
+            placeholder="本次预计消耗寿命"
             type="number"
             suffix={selectedPart?.lifeUnit || '单位'}
             onChange={setPlannedUsage}
           />
         </FormItem>
+
+        {plannedUsage.trim() !== '' && !plannedValid && (
+          <View className={styles.checkFailTip}>
+            <Text className={styles.checkFailTipText}>计划使用量必须为大于0的数字</Text>
+          </View>
+        )}
 
         {lifeCheck && (
           <View
@@ -262,7 +285,7 @@ const OutboundPage: React.FC = () => {
           <Picker
             mode="selector"
             range={CABINETS}
-            value={CABINETS.indexOf(cabinet)}
+            value={Math.max(0, CABINETS.indexOf(cabinet))}
             onChange={e => setCabinet(CABINETS[Number(e.detail.value)])}
           >
             <View className={styles.pickerWrap}>
@@ -288,7 +311,7 @@ const OutboundPage: React.FC = () => {
           取消
         </Button>
         <Button
-          className={classnames(styles.submitBtn, !lifeCheck?.pass && styles.disabled)}
+          className={classnames(styles.submitBtn, (!lifeCheck?.pass) && styles.disabled)}
           onClick={handleSubmit}
         >
           确认出库

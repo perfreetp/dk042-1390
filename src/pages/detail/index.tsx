@@ -33,7 +33,14 @@ const DetailPage: React.FC = () => {
       <View className={styles.headerCard}>
         <Text className={styles.headerPartNumber}>{part.partNumber}</Text>
         <Text className={styles.headerSerial}>序号：{part.serialNumber}</Text>
-        <StatusBadge status={part.status} />
+        <View className={styles.headerTagRow}>
+          {part.isIssued && (
+            <View className={styles.headerIssuedTag}>
+              <Text className={styles.headerIssuedTagText}>已发出</Text>
+            </View>
+          )}
+          <StatusBadge status={part.status} />
+        </View>
       </View>
 
       <View className={styles.contentWrap}>
@@ -92,10 +99,37 @@ const DetailPage: React.FC = () => {
             <Text className={styles.infoLabel}>入库时间</Text>
             <Text className={styles.infoValue}>{part.createTime}</Text>
           </View>
+          {part.isIssued && part.issuedInfo && (
+            <>
+              <View className={styles.infoRow}>
+                <Text className={styles.infoLabel}>领料人</Text>
+                <Text className={styles.infoValue}>{part.issuedInfo.receiver || '-'}</Text>
+              </View>
+              <View className={styles.infoRow}>
+                <Text className={styles.infoLabel}>工单/飞机</Text>
+                <Text className={styles.infoValue}>
+                  {part.issuedInfo.workOrder || part.issuedInfo.aircraftReg || '-'}
+                </Text>
+              </View>
+              <View className={styles.infoRow}>
+                <Text className={styles.infoLabel}>本次消耗</Text>
+                <Text className={styles.infoValue}>
+                  {part.issuedInfo.usedLife} {part.lifeUnit}
+                </Text>
+              </View>
+              <View className={styles.infoRow}>
+                <Text className={styles.infoLabel}>发出时间</Text>
+                <Text className={styles.infoValue}>{part.issuedInfo.issueTime}</Text>
+              </View>
+            </>
+          )}
           {part.statusReason && (
             <View className={styles.infoRow}>
               <Text className={styles.infoLabel}>状态说明</Text>
-              <Text className={styles.infoValue} style={{ color: '#FF7D00' }}>
+              <Text
+                className={styles.infoValue}
+                style={{ color: part.isIssued ? '#1E64C8' : '#FF7D00' }}
+              >
                 {part.statusReason}
               </Text>
             </View>

@@ -21,6 +21,24 @@
   margin-bottom: $spacing-md;
 }
 
+.tagRow {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+}
+
+.issuedTag {
+  padding: 4rpx 16rpx;
+  border-radius: $radius-round;
+  background: rgba(30, 100, 200, 0.1);
+}
+
+.issuedTagText {
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  color: $color-primary;
+}
+
 .partNumber {
   font-size: $font-size-lg;
   font-weight: $font-weight-semibold;
@@ -105,11 +123,22 @@
 .reason {
   margin-top: $spacing-sm;
   padding: $spacing-sm $spacing-md;
-  background: rgba(255, 125, 0, 0.06);
   border-radius: $radius-sm;
+}
+
+.reasonWarn {
+  background: rgba(255, 125, 0, 0.06);
+}
+
+.reasonIssued {
+  background: rgba(30, 100, 200, 0.06);
 }
 
 .reasonText {
   font-size: $font-size-xs;
   color: $color-warning;
+}
+
+.reasonIssued .reasonText {
+  color: $color-primary;
 }

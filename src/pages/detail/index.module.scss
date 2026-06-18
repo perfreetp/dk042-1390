@@ -25,6 +25,24 @@
   margin-bottom: $spacing-md;
 }
 
+.headerTagRow {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+}
+
+.headerIssuedTag {
+  padding: 6rpx 20rpx;
+  border-radius: $radius-round;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.headerIssuedTagText {
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  color: $color-text-white;
+}
+
 .contentWrap {
   padding: 0 $page-padding;
   margin-top: -32rpx;

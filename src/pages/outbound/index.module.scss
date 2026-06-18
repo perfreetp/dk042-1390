@@ -77,6 +77,18 @@
   border: 2rpx solid rgba(245, 63, 63, 0.2);
 }
 
+.checkFailTip {
+  margin-top: $spacing-sm;
+  padding: $spacing-sm $spacing-md;
+  background: rgba(245, 63, 63, 0.06);
+  border-radius: $radius-sm;
+}
+
+.checkFailTipText {
+  font-size: $font-size-xs;
+  color: $color-error;
+}
+
 .checkTitle {
   font-size: $font-size-md;
   font-weight: $font-weight-semibold;

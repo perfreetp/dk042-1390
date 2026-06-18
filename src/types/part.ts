@@ -15,6 +15,14 @@ export interface LifePart {
   storageExpiryDate: string;
   status: PartStatus;
   statusReason?: string;
+  isIssued?: boolean;
+  issuedInfo?: {
+    workOrder?: string;
+    aircraftReg?: string;
+    receiver?: string;
+    usedLife: number;
+    issueTime: string;
+  };
   location?: string;
   createTime: string;
   updateTime: string;
@@ -33,6 +41,7 @@ export interface TransactionRecord {
   receiver?: string;
   cabinet?: string;
   certificateAttached?: boolean;
+  usedLife?: number;
   returnReason?: ReturnReason;
   remark?: string;
 }
@@ -68,4 +77,34 @@ export const TRANSACTION_TYPE_TEXT: Record<TransactionType, string> = {
   inbound: '入库',
   outbound: '出库',
   return: '退库',
+};
+
+export const RETURN_REASON_STATUS_MAP: Record<
+  ReturnReason,
+  { status: PartStatus; reason: string; needException: boolean; exceptionDesc: string }
+> = {
+  life_expired: {
+    status: 'unavailable',
+    reason: '正常寿命到限退库，不可发料',
+    needException: false,
+    exceptionDesc: '',
+  },
+  fault: {
+    status: 'pending',
+    reason: '故障拆下，待工程判定',
+    needException: true,
+    exceptionDesc: '该件因故障拆下退库，需工程部门评估故障原因后决定处理方式',
+  },
+  wrong_issue: {
+    status: 'pending',
+    reason: '错发退回，待重新处理',
+    needException: true,
+    exceptionDesc: '该件因错发退回库房，需核实后重新安排发料',
+  },
+  for_repair: {
+    status: 'pending',
+    reason: '待送修，暂停发料',
+    needException: true,
+    exceptionDesc: '该件待送修退库，需安排送修并跟踪维修进度',
+  },
 };

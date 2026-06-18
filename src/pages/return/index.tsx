@@ -2,7 +2,12 @@ import React, { useState } from 'react';
 import { View, Text, Button, Textarea } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { usePart } from '@/store/PartContext';
-import { LifePart, ReturnReason, RETURN_REASON_TEXT } from '@/types/part';
+import {
+  LifePart,
+  ReturnReason,
+  RETURN_REASON_TEXT,
+  RETURN_REASON_STATUS_MAP,
+} from '@/types/part';
 import FormItem, { FormInput } from '@/components/FormItem';
 import PartCard from '@/components/PartCard';
 import styles from './index.module.scss';
@@ -16,7 +21,7 @@ const REASON_OPTIONS: { key: ReturnReason; icon: string; desc: string }[] = [
 ];
 
 const ReturnPage: React.FC = () => {
-  const { parts, addTransaction } = usePart();
+  const { parts, returnPart } = usePart();
   const [searchSerial, setSearchSerial] = useState('');
   const [selectedPart, setSelectedPart] = useState<LifePart | null>(null);
   const [returnReason, setReturnReason] = useState<ReturnReason | null>(null);
@@ -64,16 +69,28 @@ const ReturnPage: React.FC = () => {
       return;
     }
     if (!selectedPart || !returnReason) return;
-    addTransaction({
+    returnPart(selectedPart.id, returnReason, {
       partId: selectedPart.id,
-      type: 'return',
       partNumber: selectedPart.partNumber,
       serialNumber: selectedPart.serialNumber,
       operator: operator.trim(),
-      returnReason,
       remark: remark.trim() || undefined,
     });
-    Taro.showToast({ title: '退库成功', icon: 'success' });
+    const reasonMap = RETURN_REASON_STATUS_MAP[returnReason];
+    Taro.showToast({
+      title: '退库成功',
+      icon: 'success',
+    });
+    if (reasonMap.needException) {
+      setTimeout(() => {
+        Taro.showModal({
+          title: '已生成异常记录',
+          content: `该件已按"${RETURN_REASON_TEXT[returnReason]}"退库，状态变更为"${reasonMap.reason}"，并自动生成一条待处理异常记录，请前往异常页面跟进。`,
+          showCancel: false,
+          confirmText: '知道了',
+        });
+      }, 1100);
+    }
     setTimeout(() => Taro.navigateBack(), 1000);
   };
 
