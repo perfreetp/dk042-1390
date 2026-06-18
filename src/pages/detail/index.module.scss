@@ -202,3 +202,253 @@
   font-size: $font-size-sm;
   color: $color-text-tertiary;
 }
+
+.actionCard {
+  margin-bottom: $spacing-md;
+}
+
+.judgeBtn {
+  @include button-reset;
+  width: 100%;
+  height: $button-height-lg;
+  background: linear-gradient(135deg, #722ED1 0%, #7F23D1 100%);
+  color: $color-text-white;
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  border-radius: $radius-button;
+  transition: all $transition-base;
+
+  &:active {
+    opacity: 0.9;
+    transform: scale(0.98);
+  }
+}
+
+.timelineWrap {
+  position: relative;
+}
+
+.timelineItem {
+  display: flex;
+  align-items: flex-start;
+  position: relative;
+}
+
+.timelineDotWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 40rpx;
+  flex-shrink: 0;
+  padding-top: 8rpx;
+}
+
+.timelineDot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: $radius-round;
+  flex-shrink: 0;
+  z-index: 1;
+}
+
+.timelineLine {
+  flex: 1;
+  width: 2rpx;
+  background: $color-divider;
+  margin-top: 8rpx;
+}
+
+.timelineContent {
+  flex: 1;
+  min-width: 0;
+  padding-left: $spacing-sm;
+  padding-bottom: $spacing-lg;
+}
+
+.timelineHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8rpx;
+}
+
+.timelineType {
+  display: inline-flex;
+  padding: 2rpx 12rpx;
+  border-radius: $radius-round;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+}
+
+.typeInbound {
+  background: rgba(30, 100, 200, 0.1);
+  color: $color-primary;
+}
+
+.typeOutbound {
+  background: rgba(0, 180, 42, 0.1);
+  color: $color-success;
+}
+
+.typeReturn {
+  background: rgba(255, 125, 0, 0.1);
+  color: $color-warning;
+}
+
+.typeException {
+  background: rgba(245, 63, 63, 0.1);
+  color: $color-error;
+}
+
+.typeJudgment {
+  background: rgba(114, 46, 209, 0.1);
+  color: #722ED1;
+}
+
+.timelineTime {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  flex-shrink: 0;
+  margin-left: $spacing-sm;
+}
+
+.timelineDesc {
+  font-size: $font-size-sm;
+  color: $color-text-primary;
+  line-height: 1.6;
+}
+
+.timelineOperator {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  margin-top: 6rpx;
+}
+
+.modalMask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: $page-padding;
+}
+
+.modalWrap {
+  width: 100%;
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-xl;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modalTitle {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+  text-align: center;
+  margin-bottom: $spacing-lg;
+}
+
+.judgeOptions {
+  display: flex;
+  gap: $spacing-sm;
+  margin-bottom: $spacing-lg;
+}
+
+.judgeOption {
+  flex: 1;
+  padding: $spacing-md;
+  border: 2rpx solid $color-border;
+  border-radius: $radius-md;
+  text-align: center;
+  transition: all $transition-base;
+}
+
+.judgeOptionActive {
+  border-color: $color-primary;
+  background: rgba(30, 100, 200, 0.05);
+}
+
+.judgeOptionText {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  font-weight: $font-weight-medium;
+}
+
+.judgeReissue {
+  color: $color-success;
+}
+
+.judgeQuarantine {
+  color: $color-warning;
+}
+
+.judgeScrap {
+  color: $color-error;
+}
+
+.modalFormItem {
+  margin-bottom: $spacing-md;
+}
+
+.modalLabel {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  margin-bottom: $spacing-sm;
+  display: block;
+}
+
+.modalInput {
+  width: 100%;
+  height: 80rpx;
+  padding: 0 $spacing-md;
+  background: $color-bg-input;
+  border-radius: $radius-sm;
+  font-size: $font-size-sm;
+  color: $color-text-primary;
+  box-sizing: border-box;
+}
+
+.modalTextarea {
+  width: 100%;
+  height: 160rpx;
+  padding: $spacing-sm $spacing-md;
+  background: $color-bg-input;
+  border-radius: $radius-sm;
+  font-size: $font-size-sm;
+  color: $color-text-primary;
+  box-sizing: border-box;
+}
+
+.modalFooter {
+  display: flex;
+  gap: $spacing-md;
+  margin-top: $spacing-lg;
+}
+
+.modalCancelBtn {
+  @include button-reset;
+  flex: 1;
+  height: $button-height-lg;
+  background: $color-bg-input;
+  color: $color-text-secondary;
+  font-size: $font-size-md;
+  border-radius: $radius-button;
+}
+
+.modalConfirmBtn {
+  @include button-reset;
+  flex: 2;
+  height: $button-height-lg;
+  background: linear-gradient(135deg, #722ED1 0%, #7F23D1 100%);
+  color: $color-text-white;
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  border-radius: $radius-button;
+}

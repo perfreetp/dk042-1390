@@ -1,13 +1,20 @@
 import React, { useState } from 'react';
-import { View, Text, Button, ScrollView } from '@tarojs/components';
+import { View, Text, Button, ScrollView, Input, Textarea } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { usePart } from '@/store/PartContext';
+import { JudgmentResult, JUDGMENT_RESULT_TEXT } from '@/types/part';
 import styles from './index.module.scss';
 import classnames from 'classnames';
 
 const ExceptionPage: React.FC = () => {
-  const { exceptions, resolveException } = usePart();
+  const { exceptions, resolveException, judgePart } = usePart();
   const [filter, setFilter] = useState<'all' | 'pending' | 'resolved'>('all');
+  const [showJudgeModal, setShowJudgeModal] = useState(false);
+  const [currentExceptionId, setCurrentExceptionId] = useState('');
+  const [currentPartId, setCurrentPartId] = useState('');
+  const [judgeResult, setJudgeResult] = useState<JudgmentResult>('reissue');
+  const [judgeRemark, setJudgeRemark] = useState('');
+  const [judgeOperator, setJudgeOperator] = useState('');
 
   const filtered = exceptions.filter(e => filter === 'all' || e.status === filter);
   const pendingCount = exceptions.filter(e => e.status === 'pending').length;
@@ -25,6 +32,31 @@ const ExceptionPage: React.FC = () => {
         }
       },
     });
+  };
+
+  const openJudgeModal = (exceptionId: string, partId: string) => {
+    setCurrentExceptionId(exceptionId);
+    setCurrentPartId(partId);
+    setJudgeResult('reissue');
+    setJudgeRemark('');
+    setJudgeOperator('');
+    setShowJudgeModal(true);
+  };
+
+  const handleJudgeConfirm = () => {
+    if (!judgeOperator.trim()) {
+      Taro.showToast({ title: '请输入判定人', icon: 'none' });
+      return;
+    }
+    judgePart(
+      currentPartId,
+      judgeResult,
+      judgeRemark,
+      judgeOperator.trim(),
+      currentExceptionId
+    );
+    Taro.showToast({ title: '判定成功', icon: 'success' });
+    setShowJudgeModal(false);
   };
 
   return (
@@ -88,13 +120,34 @@ const ExceptionPage: React.FC = () => {
               <View className={styles.resolveSection}>
                 <Text className={styles.resolveRow}>处理人：{item.handler}</Text>
                 <Text className={styles.resolveRow}>处理时间：{item.resolveTime}</Text>
+                {item.judgmentResult && (
+                  <View className={styles.judgmentResultRow}>
+                    <Text className={styles.judgmentResultLabel}>工程判定：</Text>
+                    <Text className={classnames(
+                      styles.judgmentResultValue,
+                      item.judgmentResult === 'reissue' && styles.judgeReissue,
+                      item.judgmentResult === 'quarantine' && styles.judgeQuarantine,
+                      item.judgmentResult === 'scrap' && styles.judgeScrap
+                    )}>
+                      {JUDGMENT_RESULT_TEXT[item.judgmentResult]}
+                    </Text>
+                  </View>
+                )}
                 <Text className={styles.resolveNote}>{item.resolveNote}</Text>
               </View>
             )}
             {item.status === 'pending' && (
-              <Button className={styles.actionBtn} onClick={() => handleResolve(item.id)}>
-                标记已处理
-              </Button>
+              <View className={styles.actionRow}>
+                <Button
+                  className={styles.judgeBtn}
+                  onClick={() => openJudgeModal(item.id, item.partId)}
+                >
+                  🔧 工程判定
+                </Button>
+                <Button className={styles.actionBtn} onClick={() => handleResolve(item.id)}>
+                  标记已处理
+                </Button>
+              </View>
             )}
           </View>
         ))
@@ -102,6 +155,70 @@ const ExceptionPage: React.FC = () => {
         <View className={styles.emptyState}>
           <Text className={styles.emptyIcon}>✅</Text>
           <Text className={styles.emptyText}>暂无异常记录</Text>
+        </View>
+      )}
+
+      {showJudgeModal && (
+        <View className={styles.modalMask} onClick={() => setShowJudgeModal(false)}>
+          <View className={styles.modalWrap} onClick={e => e.stopPropagation()}>
+            <Text className={styles.modalTitle}>工程判定</Text>
+            <View className={styles.judgeOptions}>
+              {(['reissue', 'quarantine', 'scrap'] as JudgmentResult[]).map(r => (
+                <View
+                  key={r}
+                  className={classnames(
+                    styles.judgeOption,
+                    judgeResult === r && styles.judgeOptionActive
+                  )}
+                  onClick={() => setJudgeResult(r)}
+                >
+                  <Text
+                    className={classnames(
+                      styles.judgeOptionText,
+                      judgeResult === r && r === 'reissue' && styles.judgeReissue,
+                      judgeResult === r && r === 'quarantine' && styles.judgeQuarantine,
+                      judgeResult === r && r === 'scrap' && styles.judgeScrap
+                    )}
+                  >
+                    {JUDGMENT_RESULT_TEXT[r]}
+                  </Text>
+                </View>
+              ))}
+            </View>
+            <View className={styles.modalFormItem}>
+              <Text className={styles.modalLabel}>判定人</Text>
+              <Input
+                className={styles.modalInput}
+                placeholder="请输入判定人姓名"
+                value={judgeOperator}
+                onInput={e => setJudgeOperator(e.detail.value)}
+              />
+            </View>
+            <View className={styles.modalFormItem}>
+              <Text className={styles.modalLabel}>判定说明</Text>
+              <Textarea
+                className={styles.modalTextarea}
+                value={judgeRemark}
+                placeholder="请输入判定说明"
+                onInput={e => setJudgeRemark(e.detail.value)}
+                maxlength={200}
+              />
+            </View>
+            <View className={styles.modalFooter}>
+              <Button
+                className={styles.modalCancelBtn}
+                onClick={() => setShowJudgeModal(false)}
+              >
+                取消
+              </Button>
+              <Button
+                className={styles.modalConfirmBtn}
+                onClick={handleJudgeConfirm}
+              >
+                确认判定
+              </Button>
+            </View>
+          </View>
         </View>
       )}
     </ScrollView>

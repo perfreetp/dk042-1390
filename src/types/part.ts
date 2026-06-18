@@ -4,6 +4,28 @@ export type ReturnReason = 'life_expired' | 'fault' | 'wrong_issue' | 'for_repai
 
 export type TransactionType = 'inbound' | 'outbound' | 'return';
 
+export type JudgmentResult = 'reissue' | 'quarantine' | 'scrap';
+
+export type TimelineEventType =
+  | 'inbound'
+  | 'outbound'
+  | 'return'
+  | 'exception_create'
+  | 'exception_resolve'
+  | 'judgment';
+
+export interface JudgmentRecord {
+  id: string;
+  partId: string;
+  exceptionId?: string;
+  result: JudgmentResult;
+  operator: string;
+  judgmentTime: string;
+  remark: string;
+  newStatus: PartStatus;
+  newStatusReason: string;
+}
+
 export interface LifePart {
   id: string;
   partNumber: string;
@@ -22,6 +44,12 @@ export interface LifePart {
     receiver?: string;
     usedLife: number;
     issueTime: string;
+  };
+  lastJudgment?: {
+    result: JudgmentResult;
+    operator: string;
+    judgmentTime: string;
+    remark: string;
   };
   location?: string;
   createTime: string;
@@ -58,6 +86,8 @@ export interface ExceptionRecord {
   handler?: string;
   resolveTime?: string;
   resolveNote?: string;
+  judgmentResult?: JudgmentResult;
+  judgmentRemark?: string;
 }
 
 export const STATUS_TEXT: Record<PartStatus, string> = {
@@ -107,4 +137,19 @@ export const RETURN_REASON_STATUS_MAP: Record<
     needException: true,
     exceptionDesc: '该件待送修退库，需安排送修并跟踪维修进度',
   },
+};
+
+export const JUDGMENT_RESULT_TEXT: Record<JudgmentResult, string> = {
+  reissue: '可重新发料',
+  quarantine: '继续隔离',
+  scrap: '报废',
+};
+
+export const JUDGMENT_RESULT_STATUS_MAP: Record<
+  JudgmentResult,
+  { status: PartStatus; reasonPrefix: string }
+> = {
+  reissue: { status: 'available', reasonPrefix: '工程判定通过，' },
+  quarantine: { status: 'pending', reasonPrefix: '工程判定继续隔离，' },
+  scrap: { status: 'unavailable', reasonPrefix: '工程判定报废，' },
 };

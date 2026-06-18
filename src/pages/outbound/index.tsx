@@ -57,6 +57,19 @@ const OutboundPage: React.FC = () => {
         lifeUnit: selectedPart.lifeUnit,
       };
     }
+    if (selectedPart.status === 'pending') {
+      const hasReissueJudgment = selectedPart.lastJudgment?.result === 'reissue';
+      if (!hasReissueJudgment) {
+        return {
+          pass: false,
+          level: 'fail',
+          title: '✗ 待工程判定，暂不可发料',
+          desc: selectedPart.statusReason || '该件处于待处理状态，需工程部门判定放行后方可发料',
+          remainingLife: remaining,
+          lifeUnit: selectedPart.lifeUnit,
+        };
+      }
+    }
     if (afterUse < 0) {
       return {
         pass: false,

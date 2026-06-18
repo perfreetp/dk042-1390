@@ -63,6 +63,113 @@
   }
 }
 
+.advancedToggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-md 0 $spacing-sm;
+}
+
+.advancedToggleText {
+  font-size: $font-size-sm;
+  color: $color-primary;
+  margin-right: $spacing-xs;
+}
+
+.advancedArrow {
+  font-size: 20rpx;
+  color: $color-primary;
+  transition: transform $transition-base;
+}
+
+.expanded {
+  transform: rotate(180deg);
+}
+
+.advancedPanel {
+  margin-top: $spacing-md;
+  padding: $spacing-md;
+  background: $color-bg-input;
+  border-radius: $radius-md;
+}
+
+.filterRow {
+  display: flex;
+  align-items: center;
+  margin-bottom: $spacing-md;
+
+  &:last-of-type {
+    margin-bottom: $spacing-sm;
+  }
+}
+
+.filterLabel {
+  width: 140rpx;
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  flex-shrink: 0;
+}
+
+.filterPicker {
+  flex: 1;
+  height: 64rpx;
+  display: flex;
+  align-items: center;
+  padding: 0 $spacing-md;
+  background: $color-bg-card;
+  border-radius: $radius-sm;
+}
+
+.filterPickerText {
+  font-size: $font-size-sm;
+  color: $color-text-primary;
+
+  &.placeholder {
+    color: $color-text-disabled;
+  }
+}
+
+.dateRange {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+}
+
+.dateInput {
+  flex: 1;
+  height: 64rpx;
+  padding: 0 $spacing-sm;
+  background: $color-bg-card;
+  border-radius: $radius-sm;
+  font-size: $font-size-sm;
+  color: $color-text-primary;
+}
+
+.dateSep {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+}
+
+.filterActions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: $spacing-md;
+  padding-top: $spacing-md;
+  border-top: 1rpx solid $color-divider;
+}
+
+.resetBtn {
+  padding: $spacing-xs $spacing-lg;
+  background: $color-bg-card;
+  border-radius: $radius-sm;
+}
+
+.resetBtnText {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+}
+
 .listSection {
   padding: $page-padding;
   padding-top: $spacing-md;

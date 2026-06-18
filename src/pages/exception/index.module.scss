@@ -158,21 +158,189 @@
   margin-top: $spacing-sm;
 }
 
+.actionRow {
+  display: flex;
+  gap: $spacing-sm;
+  margin-top: $spacing-md;
+}
+
 .actionBtn {
   @include button-reset;
-  margin-top: $spacing-md;
+  flex: 1;
   height: $button-height-sm;
   background: $color-primary;
   color: $color-text-white;
   font-size: $font-size-sm;
   border-radius: $radius-button;
-  padding: 0 $spacing-lg;
+  padding: 0 $spacing-md;
   transition: all $transition-base;
 
   &:active {
     opacity: 0.9;
     transform: scale(0.98);
   }
+}
+
+.judgeBtn {
+  @include button-reset;
+  flex: 1;
+  height: $button-height-sm;
+  background: linear-gradient(135deg, #722ED1 0%, #7F23D1 100%);
+  color: $color-text-white;
+  font-size: $font-size-sm;
+  border-radius: $radius-button;
+  padding: 0 $spacing-md;
+  transition: all $transition-base;
+
+  &:active {
+    opacity: 0.9;
+    transform: scale(0.98);
+  }
+}
+
+.judgmentResultRow {
+  display: flex;
+  align-items: center;
+  margin-bottom: $spacing-xs;
+}
+
+.judgmentResultLabel {
+  font-size: $font-size-xs;
+  color: $color-text-secondary;
+}
+
+.judgmentResultValue {
+  font-size: $font-size-xs;
+  font-weight: $font-weight-semibold;
+}
+
+.judgeReissue {
+  color: $color-success;
+}
+
+.judgeQuarantine {
+  color: $color-warning;
+}
+
+.judgeScrap {
+  color: $color-error;
+}
+
+.modalMask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: $page-padding;
+}
+
+.modalWrap {
+  width: 100%;
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-xl;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modalTitle {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+  text-align: center;
+  margin-bottom: $spacing-lg;
+}
+
+.judgeOptions {
+  display: flex;
+  gap: $spacing-sm;
+  margin-bottom: $spacing-lg;
+}
+
+.judgeOption {
+  flex: 1;
+  padding: $spacing-md;
+  border: 2rpx solid $color-border;
+  border-radius: $radius-md;
+  text-align: center;
+  transition: all $transition-base;
+}
+
+.judgeOptionActive {
+  border-color: $color-primary;
+  background: rgba(30, 100, 200, 0.05);
+}
+
+.judgeOptionText {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  font-weight: $font-weight-medium;
+}
+
+.modalFormItem {
+  margin-bottom: $spacing-md;
+}
+
+.modalLabel {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  margin-bottom: $spacing-sm;
+  display: block;
+}
+
+.modalInput {
+  width: 100%;
+  height: 80rpx;
+  padding: 0 $spacing-md;
+  background: $color-bg-input;
+  border-radius: $radius-sm;
+  font-size: $font-size-sm;
+  color: $color-text-primary;
+  box-sizing: border-box;
+}
+
+.modalTextarea {
+  width: 100%;
+  height: 160rpx;
+  padding: $spacing-sm $spacing-md;
+  background: $color-bg-input;
+  border-radius: $radius-sm;
+  font-size: $font-size-sm;
+  color: $color-text-primary;
+  box-sizing: border-box;
+}
+
+.modalFooter {
+  display: flex;
+  gap: $spacing-md;
+  margin-top: $spacing-lg;
+}
+
+.modalCancelBtn {
+  @include button-reset;
+  flex: 1;
+  height: $button-height-lg;
+  background: $color-bg-input;
+  color: $color-text-secondary;
+  font-size: $font-size-md;
+  border-radius: $radius-button;
+}
+
+.modalConfirmBtn {
+  @include button-reset;
+  flex: 2;
+  height: $button-height-lg;
+  background: linear-gradient(135deg, #722ED1 0%, #7F23D1 100%);
+  color: $color-text-white;
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  border-radius: $radius-button;
 }
 
 .emptyState {

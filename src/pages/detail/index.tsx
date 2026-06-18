@@ -1,22 +1,27 @@
-import React, { useMemo } from 'react';
-import { View, Text, ScrollView } from '@tarojs/components';
+import React, { useMemo, useState } from 'react';
+import { View, Text, ScrollView, Button, Textarea, Input } from '@tarojs/components';
 import Taro, { useRouter } from '@tarojs/taro';
 import { usePart } from '@/store/PartContext';
-import { TRANSACTION_TYPE_TEXT } from '@/types/part';
+import { JudgmentResult, JUDGMENT_RESULT_TEXT } from '@/types/part';
 import StatusBadge from '@/components/StatusBadge';
 import styles from './index.module.scss';
 import classnames from 'classnames';
 
 const DetailPage: React.FC = () => {
   const router = useRouter();
-  const { getPartById, transactions } = usePart();
+  const { getPartById, getTimeline, judgePart } = usePart();
   const partId = router.params.id;
 
   const part = useMemo(() => (partId ? getPartById(partId) : undefined), [partId, getPartById]);
-  const partTransactions = useMemo(
-    () => transactions.filter(t => t.partId === partId),
-    [transactions, partId]
+  const timeline = useMemo(
+    () => (partId ? getTimeline(partId) : []),
+    [partId, getTimeline]
   );
+
+  const [showJudgeModal, setShowJudgeModal] = useState(false);
+  const [judgeResult, setJudgeResult] = useState<JudgmentResult>('reissue');
+  const [judgeRemark, setJudgeRemark] = useState('');
+  const [judgeOperator, setJudgeOperator] = useState('');
 
   if (!part) {
     return (
@@ -136,68 +141,137 @@ const DetailPage: React.FC = () => {
           )}
         </View>
 
+        {part.status === 'pending' && !part.isIssued && (
+          <View className={styles.actionCard}>
+            <Button
+              className={styles.judgeBtn}
+              onClick={() => setShowJudgeModal(true)}
+            >
+              🔧 工程判定
+            </Button>
+          </View>
+        )}
+
         <View className={styles.infoCard}>
           <Text className={styles.cardTitle}>
             <View className={styles.cardTitleIcon} />
-            操作记录
+            时间线
           </Text>
-          {partTransactions.length > 0 ? (
-            partTransactions.map(t => (
-              <View key={t.id} className={styles.historyItem}>
-                <View
-                  className={styles.historyDot}
-                  style={{
-                    background:
-                      t.type === 'inbound'
-                        ? '#1E64C8'
-                        : t.type === 'outbound'
-                        ? '#00B42A'
-                        : '#FF7D00',
-                  }}
-                />
-                <View className={styles.historyContent}>
-                  <Text
-                    className={classnames(
-                      styles.historyType,
-                      t.type === 'inbound' && styles.typeInbound,
-                      t.type === 'outbound' && styles.typeOutbound,
-                      t.type === 'return' && styles.typeReturn
+          {timeline.length > 0 ? (
+            <View className={styles.timelineWrap}>
+              {timeline.map((event, index) => (
+                <View key={event.id} className={styles.timelineItem}>
+                  <View className={styles.timelineDotWrap}>
+                    <View
+                      className={styles.timelineDot}
+                      style={{ background: event.color }}
+                    />
+                    {index < timeline.length - 1 && (
+                      <View className={styles.timelineLine} />
                     )}
-                  >
-                    {TRANSACTION_TYPE_TEXT[t.type]}
-                  </Text>
-                  <Text className={styles.historyDesc}>
-                    {t.type === 'outbound' && t.workOrder
-                      ? `工单号：${t.workOrder}`
-                      : t.type === 'outbound' && t.aircraftReg
-                      ? `飞机号：${t.aircraftReg}`
-                      : t.type === 'return' && t.returnReason
-                      ? `退回原因：${
-                          t.returnReason === 'life_expired'
-                            ? '正常寿命到限'
-                            : t.returnReason === 'fault'
-                            ? '故障拆下'
-                            : t.returnReason === 'wrong_issue'
-                            ? '错发退回'
-                            : '待送修'
-                        }`
-                      : '寿命件入库登记'}
-                    {t.receiver && ` | 领料人：${t.receiver}`}
-                  </Text>
-                  <Text className={styles.historyTime}>
-                    {t.operator} · {t.operateTime}
-                  </Text>
-                  {t.remark && (
-                    <Text className={styles.historyTime}>备注：{t.remark}</Text>
-                  )}
+                  </View>
+                  <View className={styles.timelineContent}>
+                    <View className={styles.timelineHeader}>
+                      <Text
+                        className={classnames(
+                          styles.timelineType,
+                          event.type === 'inbound' && styles.typeInbound,
+                          event.type === 'outbound' && styles.typeOutbound,
+                          event.type === 'return' && styles.typeReturn,
+                          (event.type === 'exception_create' || event.type === 'exception_resolve') && styles.typeException,
+                          event.type === 'judgment' && styles.typeJudgment
+                        )}
+                      >
+                        {event.title}
+                      </Text>
+                      <Text className={styles.timelineTime}>{event.time}</Text>
+                    </View>
+                    <Text className={styles.timelineDesc}>{event.desc}</Text>
+                    {event.operator && (
+                      <Text className={styles.timelineOperator}>操作人：{event.operator}</Text>
+                    )}
+                  </View>
                 </View>
-              </View>
-            ))
+              ))}
+            </View>
           ) : (
-            <Text className={styles.emptyHistory}>暂无操作记录</Text>
+            <Text className={styles.emptyHistory}>暂无记录</Text>
           )}
         </View>
       </View>
+
+      {showJudgeModal && (
+        <View className={styles.modalMask} onClick={() => setShowJudgeModal(false)}>
+          <View className={styles.modalWrap} onClick={e => e.stopPropagation()}>
+            <Text className={styles.modalTitle}>工程判定</Text>
+            <View className={styles.judgeOptions}>
+              {(['reissue', 'quarantine', 'scrap'] as JudgmentResult[]).map(r => (
+                <View
+                  key={r}
+                  className={classnames(
+                    styles.judgeOption,
+                    judgeResult === r && styles.judgeOptionActive
+                  )}
+                  onClick={() => setJudgeResult(r)}
+                >
+                  <Text
+                    className={classnames(
+                      styles.judgeOptionText,
+                      judgeResult === r && r === 'reissue' && styles.judgeReissue,
+                      judgeResult === r && r === 'quarantine' && styles.judgeQuarantine,
+                      judgeResult === r && r === 'scrap' && styles.judgeScrap
+                    )}
+                  >
+                    {JUDGMENT_RESULT_TEXT[r]}
+                  </Text>
+                </View>
+              ))}
+            </View>
+            <View className={styles.modalFormItem}>
+              <Text className={styles.modalLabel}>判定人</Text>
+              <Input
+                className={styles.modalInput}
+                placeholder="请输入判定人姓名"
+                value={judgeOperator}
+                onInput={e => setJudgeOperator(e.detail.value)}
+              />
+            </View>
+            <View className={styles.modalFormItem}>
+              <Text className={styles.modalLabel}>判定说明</Text>
+              <Textarea
+                className={styles.modalTextarea}
+                value={judgeRemark}
+                placeholder="请输入判定说明"
+                onInput={e => setJudgeRemark(e.detail.value)}
+                maxlength={200}
+              />
+            </View>
+            <View className={styles.modalFooter}>
+              <Button
+                className={styles.modalCancelBtn}
+                onClick={() => setShowJudgeModal(false)}
+              >
+                取消
+              </Button>
+              <Button
+                className={styles.modalConfirmBtn}
+                onClick={() => {
+                  if (!judgeOperator.trim()) {
+                    Taro.showToast({ title: '请输入判定人', icon: 'none' });
+                    return;
+                  }
+                  if (!partId) return;
+                  judgePart(partId, judgeResult, judgeRemark, judgeOperator.trim());
+                  Taro.showToast({ title: '判定成功', icon: 'success' });
+                  setShowJudgeModal(false);
+                }}
+              >
+                确认判定
+              </Button>
+            </View>
+          </View>
+        </View>
+      )}
     </ScrollView>
   );
 };
